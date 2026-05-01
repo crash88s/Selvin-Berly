@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post | Wanderlust</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-white">
+
+    <nav class="p-6">
+        <a href="index.html" class="text-sm font-bold uppercase tracking-widest flex items-center hover:text-blue-600 transition">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Volver al Inicio
+        </a>
+    </nav>
+
+    <article class="max-w-3xl mx-auto px-6 py-10">
+        <header class="mb-12 reveal">
+            <span class="text-blue-600 font-semibold tracking-widest text-xs uppercase">Aventura</span>
+            <h1 class="text-5xl md:text-7xl mt-4 mb-6 font-serif italic leading-tight">Bajo las Luces del Norte</h1>
+            <div class="flex items-center text-gray-400 text-sm">
+                <span>12 de Octubre, 2023</span>
+                <span class="mx-3 text-gray-200">|</span>
+                <span>Islandia</span>
+            </div>
+        </header>
+
+        <div class="post-content reveal text-lg leading-relaxed text-gray-700 space-y-6">
+            <p>La primera vez que ves una aurora boreal, el mundo parece detenerse. No es solo luz; es un movimiento fluido que desafía la lógica de lo que conocemos como cielo.</p>
+            
+            <!-- Instagram Embed -->
+            <div class="instagram-container my-12">
+                <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/C0H2f_vst6b/" data-instgrm-version="14"></blockquote>
+            </div>
+
+            <p>Recorrimos la Ring Road durante 10 días, enfrentando vientos de 80km/h y paisajes que parecían sacados de Marte.</p>
+        </div>
+
+        <!-- Comentarios PRO -->
+        <section class="mt-24 pt-12 border-t border-gray-100">
+            <h3 class="text-3xl font-serif mb-10 italic">Conversación</h3>
+            <div id="comments-list" class="space-y-8 mb-12">
+                <!-- Se llenará con JS -->
+            </div>
+
+            <form id="comment-form" class="bg-gray-50 p-10 rounded-3xl">
+                <div class="grid grid-cols-1 gap-6">
+                    <input type="text" id="user-name" placeholder="Nombre completo" required class="custom-input">
+                    <textarea id="user-comment" rows="4" placeholder="Comparte tu opinión..." required class="custom-input"></textarea>
+                    <button type="submit" class="btn-primary">ENVIAR COMENTARIO</button>
+                </div>
+            </form>
+        </section>
+    </article>
+
+    <script async src="//www.instagram.com/embed.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
