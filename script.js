@@ -1,101 +1,94 @@
-// --- CONFIGURACIÓN Y DATOS INICIALES ---
-const USER_AUTH = { user: "selvinberly", pass: "aventura2024" };
-
-let travels = JSON.parse(localStorage.getItem('travels')) || [
+// Datos iniciales de prueba (Aparecerán si el localStorage está vacío)
+const initialTravels = [
     {
         id: 1,
-        title: "Cascadas de ensueño",
+        title: "Nuestra primera aventura",
         location: "Guatemala",
         date: "Mayo 2024",
-        img: "https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?auto=format&fit=crop&q=80&w=1000",
-        desc: "Explorando los rincones más verdes de nuestra tierra."
+        img: "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&q=80&w=1000",
+        desc: "Bienvenidos a nuestro blog. Aquí documentaremos cada paso de Selvin & Berly por el mundo."
     }
 ];
 
-// --- RENDERIZAR POSTS EN LA HOME ---
+// Cargar viajes del localStorage o usar los iniciales
+let travels = JSON.parse(localStorage.getItem('travels')) || initialTravels;
+
 function renderTravels() {
     const grid = document.getElementById('travel-grid');
-    if (!grid) return;
+    if (!grid) {
+        console.error("No se encontró el elemento travel-grid");
+        return;
+    }
+
+    if (travels.length === 0) {
+        grid.innerHTML = "<p class='col-span-full text-center text-gray-400'>Aún no hay viajes registrados.</p>";
+        return;
+    }
 
     grid.innerHTML = travels.map(t => `
-        <article class="card-travel reveal active">
-            <div class="relative h-80 overflow-hidden">
-                <img src="${t.img}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" alt="${t.title}">
+        <article class="card-travel reveal active" style="opacity:1; transform:none;">
+            <div class="relative h-80 overflow-hidden rounded-t-3xl">
+                <img src="${t.img}" class="w-full h-full object-cover" alt="${t.title}">
                 <span class="absolute top-4 left-4 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full">${t.location}</span>
             </div>
-            <div class="p-8">
+            <div class="p-8 bg-white rounded-b-3xl border border-gray-100">
                 <span class="text-emerald-600 text-[10px] font-bold uppercase tracking-widest">${t.date}</span>
-                <h3 class="text-2xl mt-2 mb-3 font-serif italic">${t.title}</h3>
+                <h3 class="text-2xl mt-2 mb-3 font-serif italic text-gray-800">${t.title}</h3>
                 <p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-2">${t.desc}</p>
                 <div class="flex justify-between items-center">
-                    <a href="post.html" class="text-xs font-bold border-b-2 border-black pb-1 hover:text-emerald-600 hover:border-emerald-600 transition">VER GALERÍA</a>
-                    ${localStorage.getItem('isLogged') ? `<button onclick="deletePost(${t.id})" class="btn-admin-action">ELIMINAR</button>` : ''}
+                    <a href="post.html" class="text-xs font-bold border-b-2 border-emerald-600 pb-1 text-emerald-700">VER AVENTURA</a>
+                    ${localStorage.getItem('isLogged') ? `<button onclick="deletePost(${t.id})" class="text-red-500 text-xs font-bold uppercase">Borrar</button>` : ''}
                 </div>
             </div>
         </article>
     `).join('');
 }
 
-// --- LÓGICA DE LOGIN ---
-const loginForm = document.getElementById('login-form');
-if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const u = document.getElementById('username').value;
-        const p = document.getElementById('password').value;
+// Ejecutar al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM Cargado, iniciando renderizado...");
+    renderTravels();
+    
+    // Año automático
+    const yr = document.getElementById('year');
+    if(yr) yr.textContent = new Date().getFullYear();
 
-        if (u === USER_AUTH.user && p === USER_AUTH.pass) {
-            localStorage.setItem('isLogged', 'true');
-            window.location.href = 'index.html';
-        } else {
-            alert("Usuario o contraseña incorrectos");
-        }
-    });
+    // Cambiar botón si hay sesión iniciada
+    const adminBtn = document.getElementById('admin-btn');
+    if (localStorage.getItem('isLogged') && adminBtn) {
+        adminBtn.textContent = "+ AÑADIR VIAJE";
+        adminBtn.onclick = (e) => {
+            e.preventDefault();
+            createNewPost();
+        };
+    }
+});
+
+function createNewPost() {
+    const title = prompt("Título del viaje:");
+    if(!title) return;
+    const location = prompt("Ubicación (ej: Volcán de Fuego):");
+    const img = prompt("URL de la foto (puedes usar un link de Unsplash o tu IG):");
+    const desc = prompt("Breve descripción:");
+
+    const newPost = {
+        id: Date.now(),
+        title,
+        location,
+        date: "Recién publicado",
+        img: img || "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1",
+        desc: desc || "Sin descripción."
+    };
+
+    travels.unshift(newPost);
+    localStorage.setItem('travels', JSON.stringify(travels));
+    renderTravels();
 }
 
-// --- LOGOUT (OPCIONAL) ---
-function logout() {
-    localStorage.removeItem('isLogged');
-    window.location.reload();
-}
-
-// --- BORRAR POST ---
 function deletePost(id) {
-    if(confirm('¿Seguro que quieres borrar esta aventura?')) {
+    if(confirm('¿Borrar esta aventura?')) {
         travels = travels.filter(t => t.id !== id);
         localStorage.setItem('travels', JSON.stringify(travels));
         renderTravels();
     }
 }
-
-// --- INICIALIZACIÓN ---
-document.addEventListener('DOMContentLoaded', () => {
-    renderTravels();
-    
-    // Año en footer
-    const yr = document.getElementById('year');
-    if(yr) yr.textContent = new Date().getFullYear();
-
-    // Mostrar botón de Admin si está logueado
-    const adminBtn = document.getElementById('admin-btn');
-    if (localStorage.getItem('isLogged') && adminBtn) {
-        adminBtn.textContent = "Añadir Viaje";
-        adminBtn.href = "#"; 
-        adminBtn.onclick = () => {
-            const title = prompt("Título del viaje:");
-            if(title) {
-                const newPost = {
-                    id: Date.now(),
-                    title: title,
-                    location: prompt("Ubicación:"),
-                    date: "Recién subido",
-                    img: prompt("URL de la imagen de portada:"),
-                    desc: prompt("Descripción corta:")
-                };
-                travels.unshift(newPost);
-                localStorage.setItem('travels', JSON.stringify(travels));
-                renderTravels();
-            }
-        };
-    }
-});
