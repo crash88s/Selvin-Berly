@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust | Mi Diario de Viajes</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300" id="main-nav">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold tracking-tighter logo">WANDERLUST.</a>
+            <div class="hidden md:flex space-x-8 text-sm uppercase tracking-widest font-semibold">
+                <a href="#" class="nav-link">Destinos</a>
+                <a href="#" class="nav-link">Sobre mí</a>
+                <a href="#" class="nav-link">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative h-[85vh] flex items-center justify-center overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=2070" class="absolute w-full h-full object-cover parallax-img" alt="Hero">
+        <div class="absolute inset-0 bg-black/30"></div>
+        <div class="relative text-center text-white px-4 reveal">
+            <h1 class="text-6xl md:text-8xl mb-4 italic font-serif">Explora lo inexplorado</h1>
+            <p class="text-lg md:text-2xl font-light max-w-2xl mx-auto opacity-90">Crónicas visuales de un viajero incansable.</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12" id="travel-grid">
+            <!-- Tarjeta 1 -->
+            <article class="card-travel reveal">
+                <a href="post.html">
+                    <div class="card-image-container">
+                        <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&q=80&w=1000" class="zoom-img" alt="Islandia">
+                        <div class="card-category">Islandia</div>
+                    </div>
+                    <div class="py-6">
+                        <span class="text-gray-400 text-xs uppercase tracking-widest">Octubre 2023</span>
+                        <h3 class="text-2xl mt-2 mb-3 font-serif italic">Bajo las Luces del Norte</h3>
+                        <p class="text-gray-600 leading-relaxed mb-4 line-clamp-2">Un viaje épico buscando la danza de las auroras boreales en el cielo ártico.</p>
+                        <span class="read-more">LEER HISTORIA</span>
+                    </div>
+                </a>
+            </article>
+            <!-- Más tarjetas pueden ir aquí -->
+        </div>
+    </main>
+
+    <footer class="bg-white py-12 border-t border-gray-100 text-center">
+        <p class="text-gray-400 text-sm">© <span id="year"></span> Wanderlust Blog. Creado con pasión.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
