@@ -1,58 +1,101 @@
-// 1. Dinamismo en la Navegación al hacer Scroll
-window.addEventListener('scroll', () => {
-    const nav = document.getElementById('main-nav');
-    if (window.scrollY > 50) {
-        nav.classList.add('py-2', 'shadow-lg');
-        nav.classList.remove('py-4');
-    } else {
-        nav.classList.remove('py-2', 'shadow-lg');
-        nav.classList.add('py-4');
+// --- CONFIGURACIÓN Y DATOS INICIALES ---
+const USER_AUTH = { user: "selvinberly", pass: "aventura2024" };
+
+let travels = JSON.parse(localStorage.getItem('travels')) || [
+    {
+        id: 1,
+        title: "Cascadas de ensueño",
+        location: "Guatemala",
+        date: "Mayo 2024",
+        img: "https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?auto=format&fit=crop&q=80&w=1000",
+        desc: "Explorando los rincones más verdes de nuestra tierra."
     }
-});
+];
 
-// 2. Animaciones de Revelación (Intersection Observer)
-const observerOptions = {
-    threshold: 0.1
-};
+// --- RENDERIZAR POSTS EN LA HOME ---
+function renderTravels() {
+    const grid = document.getElementById('travel-grid');
+    if (!grid) return;
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('active');
+    grid.innerHTML = travels.map(t => `
+        <article class="card-travel reveal active">
+            <div class="relative h-80 overflow-hidden">
+                <img src="${t.img}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" alt="${t.title}">
+                <span class="absolute top-4 left-4 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full">${t.location}</span>
+            </div>
+            <div class="p-8">
+                <span class="text-emerald-600 text-[10px] font-bold uppercase tracking-widest">${t.date}</span>
+                <h3 class="text-2xl mt-2 mb-3 font-serif italic">${t.title}</h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-2">${t.desc}</p>
+                <div class="flex justify-between items-center">
+                    <a href="post.html" class="text-xs font-bold border-b-2 border-black pb-1 hover:text-emerald-600 hover:border-emerald-600 transition">VER GALERÍA</a>
+                    ${localStorage.getItem('isLogged') ? `<button onclick="deletePost(${t.id})" class="btn-admin-action">ELIMINAR</button>` : ''}
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
+
+// --- LÓGICA DE LOGIN ---
+const loginForm = document.getElementById('login-form');
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+
+        if (u === USER_AUTH.user && p === USER_AUTH.pass) {
+            localStorage.setItem('isLogged', 'true');
+            window.location.href = 'index.html';
+        } else {
+            alert("Usuario o contraseña incorrectos");
         }
     });
-}, observerOptions);
-
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-// 3. Sistema de Comentarios
-const commentForm = document.getElementById('comment-form');
-const commentsList = document.getElementById('comments-list');
-
-if (commentForm) {
-    commentForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const name = document.getElementById('user-name').value;
-        const text = document.getElementById('user-comment').value;
-
-        addComment(name, text);
-        commentForm.reset();
-    });
 }
 
-function addComment(name, text) {
-    const date = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
-    const newComment = document.createElement('div');
-    newComment.className = 'border-l-4 border-blue-600 pl-6 py-2 bg-gray-50 rounded-r-lg reveal active';
-    newComment.innerHTML = `
-        <h5 class="font-bold text-gray-900">${name}</h5>
-        <p class="text-gray-500 text-xs mb-2">${date}</p>
-        <p class="text-gray-700">${text}</p>
-    `;
+// --- LOGOUT (OPCIONAL) ---
+function logout() {
+    localStorage.removeItem('isLogged');
+    window.location.reload();
+}
+
+// --- BORRAR POST ---
+function deletePost(id) {
+    if(confirm('¿Seguro que quieres borrar esta aventura?')) {
+        travels = travels.filter(t => t.id !== id);
+        localStorage.setItem('travels', JSON.stringify(travels));
+        renderTravels();
+    }
+}
+
+// --- INICIALIZACIÓN ---
+document.addEventListener('DOMContentLoaded', () => {
+    renderTravels();
     
-    commentsList.prepend(newComment);
-}
+    // Año en footer
+    const yr = document.getElementById('year');
+    if(yr) yr.textContent = new Date().getFullYear();
 
-// 4. Año Automático en Footer
-document.getElementById('year').textContent = new Date().getFullYear();
+    // Mostrar botón de Admin si está logueado
+    const adminBtn = document.getElementById('admin-btn');
+    if (localStorage.getItem('isLogged') && adminBtn) {
+        adminBtn.textContent = "Añadir Viaje";
+        adminBtn.href = "#"; 
+        adminBtn.onclick = () => {
+            const title = prompt("Título del viaje:");
+            if(title) {
+                const newPost = {
+                    id: Date.now(),
+                    title: title,
+                    location: prompt("Ubicación:"),
+                    date: "Recién subido",
+                    img: prompt("URL de la imagen de portada:"),
+                    desc: prompt("Descripción corta:")
+                };
+                travels.unshift(newPost);
+                localStorage.setItem('travels', JSON.stringify(travels));
+                renderTravels();
+            }
+        };
+    }
+});
